@@ -5,11 +5,24 @@
         "es2021": true
     },
     "extends": "airbnb-base",
-    "overrides": [
-    ],
+    "overrides": [],
     "parserOptions": {
         "ecmaVersion": "latest"
     },
     "rules": {
+        "prettier/prettier": "error",
+        "quotes": [
+            "error",
+            "double"
+        ], // if you want to allow double quotes
+        "max-len": [
+            "warn",
+            {
+                "code": 120
+            }
+        ], // bump line limit to 120
+        "no-shadow": "off", // allow variable shadowing
+        "comma-dangle": "off", // allow no trailing commas
+        "implicit-arrow-linebreak": "off" // allow awkward line breaks
     }
 }
