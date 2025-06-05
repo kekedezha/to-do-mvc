@@ -1,14 +1,14 @@
-const express = require('express');
-require('dotenv').config();
+const express = require("express");
+require("dotenv").config();
 // import routes
-const todoRoutes = require('./routes/todo');
+const todoRoutes = require("./routes/todo");
 
 // Running express server
 const app = express();
 const port = process.env.PORT || 8000;
 
 // route middlewares
-app.use('/api', todoRoutes);
+app.use("/api", todoRoutes);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console

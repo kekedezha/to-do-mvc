@@ -1,23 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import { getTodos, createTodo, removeTodo } from './util';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import { getTodos, createTodo, removeTodo } from "./util";
 
 const App = () => {
   const [todo, setTodo] = useState({
-    description: '',
+    description: "",
   });
   const [todoList, setTodoList] = useState();
   const [error, setError] = useState();
 
-// Create a fetchTodos() function to update the View from Model using getTodos() function from Controller
+  // Create a fetchTodos() function to update the View from Model using getTodos() function from Controller
+  const fetchTodos = async () => {
+    const res = await getTodos();
+    if (res.error) {
+      setError(res.error.name);
+    }
+    setTodoList(res.data);
+  };
+  // Create a handleDelete() function to remove to-do list with matching id
+  const handleDelete = async (id) => {
+    try {
+      await removeTodo(id);
+      fetchTodos();
+    } catch (error) {
+      setError(error.message || String(error));
+    }
+  };
+  // Create a handleSubmit() function to add new to-do list
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError();
 
-// Create a handleDelete() function to remove to-do list with matching id
-
-// Create a handleSubmit() function to add new to-do list
+    const data = new FormData(e.currentTarget);
+    try {
+      data.set("description", todo.description);
+      data.set("created_at", `${new Date().toISOString()}`);
+      const newTodo = await createTodo(data);
+      if (newTodo.error) {
+        setError(newTodo.error);
+      }
+      setTodo({ description: "" });
+      fetchTodos();
+    } catch (err) {
+      setError(error.message || String(error));
+    }
+  };
 
   useEffect(() => {
     // Initialize todoList
+    fetchTodos();
   }, []);
+
   return (
     <div className="App">
       <h1>To-Do List</h1>
@@ -31,7 +64,9 @@ const App = () => {
         ></input>
         <button type="submit">Add Todo</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && (
+        <p style={{ color: "red" }}>{error.message || JSON.stringify(error)}</p>
+      )}
 
       <ol>
         {todoList?.map((todoItem) => (
